@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/maoqiankun97.github.io\/posts\/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84\/%E5%9B%BE\/"
-        },"genre": "posts","keywords": "数据结构","wordcount":  6151 ,
+        },"genre": "posts","keywords": "数据结构","wordcount":  7286 ,
         "url": "https:\/\/maoqiankun97.github.io\/posts\/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84\/%E5%9B%BE\/","datePublished": "2021-03-15T20:30:02+08:00","dateModified": "2021-03-15T20:30:02+08:00","publisher": {
             "@type": "Organization",
             "name": "Riddle"},"author": {
@@ -77,8 +77,8 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">图</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/posts/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Riddle</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><i class="far fa-folder fa-fw"></i>数据结构</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-03-15">2021-03-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 6151 字&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 13 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-03-15">2021-03-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 7286 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 15 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -131,6 +131,8 @@
         <li><a href="#42-深度优先搜索">4.2 深度优先搜索</a></li>
         <li><a href="#43-最小生成树算法">4.3 最小生成树算法</a></li>
         <li><a href="#44-最短路径算法">4.4 最短路径算法</a></li>
+        <li><a href="#44-拓扑排序">4.4 拓扑排序</a></li>
+        <li><a href="#45-关键路径">4.5 关键路径</a></li>
       </ul>
     </li>
   </ul>
@@ -1122,7 +1124,112 @@ v0-&gt;&hellip;-&gt;v4路径长度为7，逆推路径为P[0][4] = 2, 即有v0-&g
 </span><span class="c1">// B-&gt;C-&gt;E-&gt;8
 </span><span class="c1">// C-&gt;D-&gt;5
 </span><span class="c1">// C-&gt;E-&gt;6
-</span></code></pre></div></div><div class="post-footer" id="post-footer">
+</span></code></pre></div><h3 id="44-拓扑排序">4.4 拓扑排序</h3>
+<h4 id="441-有向无环图">4.4.1 有向无环图</h4>
+<p>不存在环的图, 记作DAG</p>
+<h4 id="442-aov网">4.4.2 AOV网</h4>
+<p>若用一个DAG表示一个工程，其顶点表示活动，用有向边&lt;vi, vj&gt;表示活动vi先于活动vj进行的传递关系，则将这种DAG称为AOV网(Activity On Vertex)</p>
+<h4 id="443-拓扑排序">4.4.3 拓扑排序</h4>
+<p>对DAG所有顶点的一种排序，使若存在一条从顶点A到顶点B的路径，在排序中B排在A的后面</p>
+<h4 id="444-算法思想">4.4.4 算法思想</h4>
+<ol>
+<li>从DAG中选择一个没有前驱的顶点</li>
+<li>从DAG中删除该顶点和所有以它为起点的有向边</li>
+<li>重复1),2)直到DAG为空(或存在从图中选择不到没有前驱的结点，且图非空的情况，说明图中有环，即图非DAG)</li>
+</ol>
+<h4 id="445-求有向图所有拓扑排序序列代码实现">4.4.5 求有向图所有拓扑排序序列代码实现</h4>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">TreeNode</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">TreeNode</span> <span class="o">*</span><span class="n">child</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">childNums</span><span class="p">;</span>
+<span class="p">};</span>
+
+
+<span class="kt">bool</span> <span class="nf">TopologicalSortHelp</span><span class="p">(</span><span class="n">AdjListGraph</span> <span class="o">*</span><span class="n">G</span><span class="p">,</span> <span class="n">TreeNode</span> <span class="o">*&amp;</span><span class="n">root</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">inDegree</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cur_in_dgree_zero_idx</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cur_in_dgree_zero_idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">inDegree</span><span class="p">[</span><span class="n">cur_in_dgree_zero_idx</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">arc</span> <span class="o">=</span> <span class="n">G</span><span class="o">-&gt;</span><span class="n">vertex</span><span class="p">[</span><span class="n">cur_in_dgree_zero_idx</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">firstArc</span><span class="p">;</span> <span class="n">arc</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">arc</span> <span class="o">=</span> <span class="n">arc</span><span class="o">-&gt;</span><span class="n">nextArc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">inDegree</span><span class="p">[</span><span class="n">arc</span><span class="o">-&gt;</span><span class="n">adjVexIndex</span><span class="p">]</span><span class="o">--</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">G</span><span class="o">-&gt;</span><span class="n">vertexNum</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">inDegree</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">inDegree</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">auto</span> <span class="n">tnode</span> <span class="o">=</span> <span class="p">(</span><span class="n">TreeNode</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TreeNode</span><span class="p">));</span>
+            <span class="n">tnode</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+            <span class="n">tnode</span><span class="o">-&gt;</span><span class="n">childNums</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">root</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">[</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">childNums</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">tnode</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">TopologicalSortHelp</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">tnode</span><span class="p">,</span> <span class="n">inDegree</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span> <span class="nf">_Traverse_TREE</span><span class="p">(</span><span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">t</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">t</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">childNums</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">result</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">childNums</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_Traverse_TREE</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">child</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">t</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/**
+</span><span class="cm"> * 打印DAG的所有拓扑排序序列.
+</span><span class="cm"> */</span>
+<span class="kt">bool</span> <span class="nf">TopologicalSort</span><span class="p">(</span><span class="n">AdjListGraph</span> <span class="o">*</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 各顶点入度，-1表示顶点已经加入到拓扑排序序列中了
+</span><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">inDegree</span><span class="p">(</span><span class="n">G</span><span class="o">-&gt;</span><span class="n">vertexNum</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">G</span><span class="o">-&gt;</span><span class="n">vertexNum</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">arc</span> <span class="o">=</span> <span class="n">G</span><span class="o">-&gt;</span><span class="n">vertex</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">firstArc</span><span class="p">;</span> <span class="n">arc</span> <span class="o">!=</span> <span class="k">nullptr</span><span class="p">;</span> <span class="n">arc</span> <span class="o">=</span> <span class="n">arc</span><span class="o">-&gt;</span><span class="n">nextArc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">inDegree</span><span class="p">[</span><span class="n">arc</span><span class="o">-&gt;</span><span class="n">adjVexIndex</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">auto</span> <span class="n">root</span> <span class="o">=</span> <span class="p">(</span><span class="n">TreeNode</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">TreeNode</span><span class="p">));</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">childNums</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">TopologicalSortHelp</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">inDegree</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 遍历生成的结果树，得到结果序列
+</span><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">result</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">t</span><span class="p">;</span>
+    <span class="n">_Traverse_TREE</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">result</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">G</span><span class="o">-&gt;</span><span class="n">vertex</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]]</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;-&gt;&#34;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="45-关键路径">4.5 关键路径</h3>
+<h4 id="451-aoe网">4.5.1 AOE网</h4>
+<p>在有向带权图中，以顶点表示事件，以有向边表示活动，以边上权值表示完成该活动的开销(如：完成活动所需时间)，则称该有向图为AOE(Activity On Edge)网。</p>
+<ul>
+<li>源点: AOE网中入度为0的点</li>
+<li>汇点：AOE网中出度为0的点</li>
+</ul>
+<h4 id="452-关键路径">4.5.2 关键路径</h4>
+<p>从源点到汇点最大路径长度的路径称为关键路径，关键路径上的活动被称为关键活动</p>
+<h4 id="453-关键路径计算过程">4.5.3 关键路径计算过程</h4>
+<ol>
+<li>计算事件(顶点)的最早发生时间Ve，需注意事件发生的前提是其前置事件全部完成，故可以按拓扑排序序列来计算事件的最早发生事件，设事件vi有前置事件vh1、vh2, 有活动&lt;vh1, vi&gt;、&lt;vh2, vi&gt;，则vi的最早发生时间Vei为max(Veh1 + weight(&lt;vh1, vi&gt;), Veh2 + weight(&lt;vh2, vi&gt;))</li>
+<li>计算事件的最迟发生时间Vl，设置汇点的最迟发生时间等于其最早发生时间，按逆拓扑排序序列来计算时间的最迟发生时间，设事件vi有后继事件vh1、vh2, 有活动&lt;vi, vh1&gt;、&lt;vi, vh2&gt;，则vi的最迟发生时间Vli为min(Vlh1 - weight(&lt;vi, vh1&gt;), Vlh2 - weight(&lt;vi, vh2&gt;))</li>
+<li>计算活动的最早发生时间e，若存在&lt;vk, vj&gt;表示活动i，则ei = Vek</li>
+<li>计算活动的最迟发生时间l，若存在&lt;vk, vj&gt;表示活动i，则li = Vlj - weight(&lt;vk, vj&gt;)</li>
+<li>最早发生时间和最迟发生时间相同的事件即为关键路径上的事件，最早发生时间和最迟发生时间相同的活动即为关键路径上的活动</li>
+</ol>
+</div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
