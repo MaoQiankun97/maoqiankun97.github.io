@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>排序 - Riddle&#39;s Notebook</title><meta name="Description" content=""><meta property="og:title" content="排序" />
+<meta property="og:description" content="排序 分析几种常见排序算法的流程、时间复杂度、空间复杂度、稳定性(即两个相同关键字的元素在初始列表中的相对先后次序在排序后是否能够保持) 1. 插入" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://maoqiankun97.github.io/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8E%92%E5%BA%8F/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-18T09:25:56&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-18T09:25:56&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="排序"/>
+<meta name="twitter:description" content="排序 分析几种常见排序算法的流程、时间复杂度、空间复杂度、稳定性(即两个相同关键字的元素在初始列表中的相对先后次序在排序后是否能够保持) 1. 插入"/>
+<meta name="application-name" content="Riddle&#39;s Notebook">
+<meta name="apple-mobile-web-app-title" content="Riddle&#39;s Notebook"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://maoqiankun97.github.io/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8E%92%E5%BA%8F/" /><link rel="prev" href="https://maoqiankun97.github.io/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "排序",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/maoqiankun97.github.io\/posts\/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84\/%E6%8E%92%E5%BA%8F\/"
+        },"genre": "posts","keywords": "数据结构","wordcount":  3205 ,
+        "url": "https:\/\/maoqiankun97.github.io\/posts\/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84\/%E6%8E%92%E5%BA%8F\/","datePublished": "2021-03-18T09:25:56+08:00","dateModified": "2021-03-18T09:25:56+08:00","publisher": {
+            "@type": "Organization",
+            "name": "Riddle"},"author": {
+                "@type": "Person",
+                "name": "Riddle"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Riddle&#39;s Notebook">Riddle&#39;s Notebook</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Riddle&#39;s Notebook">Riddle&#39;s Notebook</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">排序</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/posts/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Riddle</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><i class="far fa-folder fa-fw"></i>数据结构</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-03-18">2021-03-18</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 3205 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-插入类排序">1. 插入类排序</a>
+      <ul>
+        <li><a href="#11-直接插入排序">1.1 直接插入排序</a></li>
+        <li><a href="#12-折半插入排序">1.2 折半插入排序</a></li>
+        <li><a href="#13-希尔排序缩小增量排序---diminishing-increment-sort">1.3 希尔排序(缩小增量排序 - Diminishing Increment Sort)</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-交换类排序">2. 交换类排序</a>
+      <ul>
+        <li><a href="#21-冒泡排序">2.1 冒泡排序</a></li>
+        <li><a href="#22-快速排序">2.2 快速排序</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-选择类排序">3. 选择类排序</a>
+      <ul>
+        <li><a href="#31-简单选择排序">3.1 简单选择排序</a></li>
+        <li><a href="#32-堆排序">3.2 堆排序</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-归并排序">4. 归并排序</a></li>
+    <li><a href="#5-基数排序">5. 基数排序</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="排序">排序</h1>
+<ul>
+<li>分析几种常见排序算法的流程、时间复杂度、空间复杂度、稳定性(即两个相同关键字的元素在初始列表中的相对先后次序在排序后是否能够保持)</li>
+</ul>
+<h2 id="1-插入类排序">1. 插入类排序</h2>
+<h3 id="11-直接插入排序">1.1 直接插入排序</h3>
+<blockquote>
+<p>将一个记录插入到已排好序的有序表中，从而得到一个新的、记录数增1的有序表。</p>
+</blockquote>
+<p>如对数组A进行排序 A = {2, 1, 3}</p>
+<p>初始化认为A[0]是一个有序序列，从A[1]开始进行插入排序得{1, 2, 3}，再循环插入排序过程得到最终的有序表。</p>
+<p>代码实现：</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * 直接插入排序.
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">StraightInsertionSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">insertNum</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="kt">int</span> <span class="n">j</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">insertNum</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="o">--</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">A</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">insertNum</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>时间复杂度：最好O(n) (即初始列表有序情况)，最坏O(n^2)，平均O(n^2)
+空间复杂度：O(1)
+稳定性: 稳定</p>
+<h3 id="12-折半插入排序">1.2 折半插入排序</h3>
+<blockquote>
+<p>由于插入排序的基本操作是在一个有序表中进行查找和插入，查找操作可以由折半查找来实现，由此进行的插入排序称之为折半插入排序(Binary Insertion Sort)</p>
+</blockquote>
+<p>代码实现:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * 折半插入排序.
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">BinaryInsertionSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">insertNum</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="c1">// 折半查找插入位置
+</span><span class="c1"></span>        <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">mid</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">left</span> <span class="o">&lt;=</span> <span class="n">right</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">insertNum</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="c1">// 最终left&gt;right, 插入位置即是left
+</span><span class="c1"></span>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="n">left</span><span class="p">;</span> <span class="o">--</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">A</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">=</span> <span class="n">insertNum</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>时间复杂度：最好O(n) (即初始列表有序情况)，最坏O(n^2)，平均O(n^2)
+空间复杂度：O(1)
+稳定性: 稳定</p>
+<h3 id="13-希尔排序缩小增量排序---diminishing-increment-sort">1.3 希尔排序(缩小增量排序 - Diminishing Increment Sort)</h3>
+<blockquote>
+<p>从对直接插入排序的分析得知，其算法时间复杂度为O(n^2)，但是若待排序记录序列已呈有序时，其时间复杂度可提高至O(n)。由此可设想，若待排序记录序列“基本有序”，直接插入排序的效率就可大大提高。从另一方面来看，由于直接插入排序的算法简单，在n较小时效率也很高。希尔排序就是从这两点出发进行改进得到的一种插入排序</p>
+</blockquote>
+<p>将总待排序序列分为d个形如L[i, i+d, i+2d, &hellip; , i+kd]个子序列，对每个子序列进行直接插入排序，当整个序列中的元素“基本有序”时，对整个序列进行一次直接插入排序，一般地d1 = Floor(n/2)，di+1 = Floor(di/2) 直到dk = 1</p>
+<p>代码实现:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * 希尔排序.
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">ShellSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="n">size</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span> <span class="n">d</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">d</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">d</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">insertNum</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+            <span class="kt">int</span> <span class="n">j</span><span class="p">;</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">d</span><span class="p">;</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">insertNum</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">-=</span> <span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+            <span class="p">}</span>
+            <span class="n">A</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">insertNum</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>时间复杂度：依据增量序列的选择会有所不同，具体的时间复杂度是一个待解决的数学问题，一般认为是O(n^1.3)
+空间复杂度：O(1)
+稳定性：不稳定</p>
+<h2 id="2-交换类排序">2. 交换类排序</h2>
+<h3 id="21-冒泡排序">2.1 冒泡排序</h3>
+<p>每一趟从后往前或从前往后两两比较相邻元素的关键字，如果是逆序，则交换二者的值，最终可以确定一个元素在序列的头部或尾部。比较n趟即可完成对整个序列的排序。</p>
+<p>代码实现:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * 冒泡排序
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">BubbleSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">bool</span> <span class="n">flag</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span> <span class="o">-</span> <span class="n">i</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">swap</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="c1">// 如果一趟冒泡没有泡往上冒，说明该趟执行的序列已经是有序了，后面也没有必要继续执行
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">flag</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="22-快速排序">2.2 快速排序</h3>
+<blockquote>
+<p>快速排序是对冒泡排序的一种改进。他的基本思想是：通过一趟排序将待排序记录分割成独立的两部分，其中一部分记录的关键字比另一部分的关键字小，则可分别对这两部分记录继续进行排序以达到整个序列有序。</p>
+</blockquote>
+<p>代码实现：</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * 快速排序-分区操作.
+</span><span class="cm"> *
+</span><span class="cm"> * @return 基准值的下标
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">Partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 基准值, 将A[low]~A[high]中小于基准值的都放在其左边，大于基准值的都放在其右边
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">pivot</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">low</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span> <span class="o">&amp;&amp;</span> <span class="n">A</span><span class="p">[</span><span class="n">high</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">pivot</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">high</span><span class="o">--</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">low</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">high</span><span class="p">];</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span> <span class="o">&amp;&amp;</span> <span class="n">A</span><span class="p">[</span><span class="n">low</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pivot</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">low</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">high</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">low</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="n">A</span><span class="p">[</span><span class="n">low</span><span class="p">]</span> <span class="o">=</span> <span class="n">pivot</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">low</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cm">/**
+</span><span class="cm"> * 快速排序
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">QuickSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">low</span> <span class="o">&gt;=</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">pivot_idx</span> <span class="o">=</span> <span class="n">Partition</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">);</span>
+    <span class="n">QuickSort</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">pivot_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">QuickSort</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">pivot_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>时间复杂度: 最好：O(nlogn) 平均：O(nlogn) 最坏：O(n^2)
+空间复杂度: O(logn)
+稳定性：不稳定</p>
+<h2 id="3-选择类排序">3. 选择类排序</h2>
+<blockquote>
+<p>选择排序的基本思想是：每一趟在n-i+1(n = 1,2,&hellip;,n-1)个记录中选取关键字最小的记录作为有序序列中的第i个记录</p>
+</blockquote>
+<h3 id="31-简单选择排序">3.1 简单选择排序</h3>
+<p>一趟简单选择排序的操作为：通过n-i次关键字间的比较，从n-i+1个记录中选出关键字最小的记录，并和第i个记录交换。</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * 简单选择排序.
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">SelectSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">min_idx</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">A</span><span class="p">[</span><span class="n">min_idx</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">min_idx</span> <span class="o">=</span> <span class="n">j</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">swap</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">min_idx</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>时间复杂度：O(n^2)
+空间复杂度: O(1)
+稳定性：不稳定 (如 2 2 1，经过一次选择排序后交换了第一个2和1的位置，两个2的相对次序改变)</p>
+<h3 id="32-堆排序">3.2 堆排序</h3>
+<p>将待排序序列对应的一维数组看出是一棵完全二叉树，堆的含义表明完全二叉树中所有非终端节点的值均不大于(不小于)其左右孩子结点的值，由此堆顶元素必为序列中所有元素的最小值(最大值)。</p>
+<h4 id="321-堆的初始化">3.2.1 堆的初始化</h4>
+<ol>
+<li>先将序列看成是一棵完全二叉树，然后从最后一个双亲结点开始向下调整(如果该双亲结点小于孩子结点，交换其与最大孩子结点的值，然后递归的对其孩子结点进行向下调整直到满足堆定义为止)，直至调整到根节点即代表堆初始化完成</li>
+<li>进行排序，排序过程为交换大小为n的堆的堆顶元素和最后一个值，再对堆序列1~n-1的根节点进行向下调整，循环至堆的大小为1为止则排序完成</li>
+<li>堆的插入，将插入结点放在末端，然后向上调整(如果其双亲小于插入的值，交换其次序，然后递归的对其双亲结点进行向上调整直到满足堆定义为止)</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * 堆的向下调整.
+</span><span class="cm"> *
+</span><span class="cm"> * @param A 堆的一维数组存储
+</span><span class="cm"> * @param heapSize 堆的大小
+</span><span class="cm"> * @param adjustIdx 待调整的结点下标
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">AdjustDown</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">heapSize</span><span class="p">,</span> <span class="kt">int</span> <span class="n">adjustIdx</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 按照完全二叉树的性质，最后一个双亲结点为树总结点数除以二向下取整, 此处由于数组下标从0开始, 故还要减一
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">lastParentIdx</span> <span class="o">=</span> <span class="p">(</span><span class="n">heapSize</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="c1">// 如果要调整的结点非双亲结点，无需调整
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">adjustIdx</span> <span class="o">&gt;</span> <span class="n">lastParentIdx</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// 求要调整的双亲结点的孩子结点的最大值，与该双亲结点比较并进行调整
+</span><span class="c1"></span>    <span class="c1">// 先初始化为其左孩子，因为由完全二叉树性质可以知道双亲结点一定有左孩子结点，未必有右孩子结点
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">max_child_val_idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">adjustIdx</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">max_child_val_idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">heapSize</span> <span class="o">&amp;&amp;</span> <span class="n">A</span><span class="p">[</span><span class="n">max_child_val_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">A</span><span class="p">[</span><span class="n">max_child_val_idx</span><span class="p">])</span> <span class="p">{</span>
+        <span class="n">max_child_val_idx</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// 如果当前要调整的双亲结点的关键字已经比其孩子结点的关键字都要大，说明无需调整
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">adjustIdx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">A</span><span class="p">[</span><span class="n">max_child_val_idx</span><span class="p">])</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// 交换要调整的双亲结点的关键字和其最大关键字的孩子结点的值，使得这个结点满足大顶堆的定义
+</span><span class="c1"></span>    <span class="n">swap</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">adjustIdx</span><span class="p">,</span> <span class="n">max_child_val_idx</span><span class="p">);</span>
+    <span class="c1">// 如果交换以后其孩子结点不符合大顶堆的定义，继续向下调整其孩子结点
+</span><span class="c1"></span>    <span class="n">AdjustDown</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">heapSize</span><span class="p">,</span> <span class="n">max_child_val_idx</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/**
+</span><span class="cm"> * 堆排序.
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">HeapSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 初始化堆
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">AdjustDown</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// 开始排序
+</span><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">swap</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">AdjustDown</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>时间复杂度：O(nlogn)
+空间复杂度：O(1)
+稳定性：不稳定</p>
+<h2 id="4-归并排序">4. 归并排序</h2>
+<p>归并的含义是将两个或两个以上的有序表组合成一个新的有序表</p>
+<ol>
+<li>将列表分为n个子表，每个子表只有一个元素，故每个子表必须有序</li>
+<li>将n个子表归并为n/2个子表</li>
+<li>循环2直至整个列表有序</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * 归并. 
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">Merge</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mid</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">high</span><span class="o">-</span><span class="n">low</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="o">*</span><span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">*</span> <span class="n">size</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">ls</span> <span class="o">=</span> <span class="n">low</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">rs</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">ls</span> <span class="o">&lt;=</span> <span class="n">mid</span> <span class="o">&amp;&amp;</span> <span class="n">rs</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">ls</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">A</span><span class="p">[</span><span class="n">rs</span><span class="p">])</span> <span class="p">{</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">ls</span><span class="o">++</span><span class="p">];</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">rs</span><span class="o">++</span><span class="p">];</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">ls</span> <span class="o">&lt;=</span> <span class="n">mid</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">ls</span><span class="o">++</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">rs</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">rs</span><span class="o">++</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">low</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">low</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">B</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/**
+</span><span class="cm"> * 归并排序. 
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">MergeSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">low</span> <span class="o">&gt;=</span> <span class="n">high</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">MergeSort</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">mid</span><span class="p">);</span>
+  <span class="n">MergeSort</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="p">);</span>
+  <span class="n">Merge</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">high</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>时间复杂度：O(nlogn)
+空间复杂度: O(n)
+稳定性：稳定</p>
+<h2 id="5-基数排序">5. 基数排序</h2>
+<blockquote>
+<p>原理是将整数按位数切割成不同的数字，然后按每个位数分别比较。基数排序的方式可以采用LSD（Least significant digital）或MSD（Most significant digital），LSD的排序方式由键值的最右边开始，而MSD则相反，由键值的最左边开始。</p>
+</blockquote>
+<p>将待排序整数的总数记为n，所有整数位数的最大数量记为d，每位值的取值范围大小记为r</p>
+<p>思想：</p>
+<ol>
+<li>初始化r个队列，队列按次序排序，比如要对十进制数排序可以初始化十个队列，分别是Q1~Qr</li>
+<li>遍历所有待排序整数，按整数的最右边第一位依次入到不同的队列，比如整数123，因为其最右边的位为3，故该整数入队Q3</li>
+<li>按Q1~Qr的次序出队所有元素得到一个序列</li>
+<li>遍历3)得到的序列，按每个整数的最右边第二位一次入队</li>
+<li>循环直到所有位都入队、出队过，得到的最终序列即是一个有序序列</li>
+</ol>
+<p>时间复杂度：O(d*(n+r))
+空间复杂度：O(r)
+稳定性：稳定</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2021-03-18</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE/" class="prev" rel="prev" title="图"><i class="fas fa-angle-left fa-fw"></i>图</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.81.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/posts/" target="_blank">Riddle</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
